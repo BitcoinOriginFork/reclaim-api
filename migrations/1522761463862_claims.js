@@ -8,7 +8,10 @@ exports.up = async () => {
     CREATE TABLE claims (
       id integer PRIMARY KEY,
       "btcoAddress" character varying(255) NOT NULL UNIQUE,
-      signature character varying(255) NOT NULL UNIQUE,
+      "signature" character varying(255) NOT NULL UNIQUE,
+      "chain" character varying(255) NOT NULL,
+      "chainAddress" character varying(255) NOT NULL,
+      "message" character varying(255) NOT NULL,
       "status" character varying(255) NOT NULL,
       "createdAt" timestamp with time zone NOT NULL,
       "updatedAt" timestamp with time zone NOT NULL

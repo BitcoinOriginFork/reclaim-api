@@ -1,7 +1,12 @@
+import { Chain } from '../crypto'
+
 export interface Claim {
   id?: number
   btcoAddress: string
   signature: string
+  chain: Chain
+  chainAddress: string
+  message: string
   status: string
   createdAt: Date
   updatedAt: Date

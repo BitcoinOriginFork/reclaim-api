@@ -17,7 +17,9 @@
   "author": "Sam Jeston",
   "license": "ISC",
   "dependencies": {
+    "bitcoinjs-message": "^2.0.0",
     "body-parser": "1.17.2",
+    "ethereumjs-util": "^5.1.5",
     "express": "4.15.3",
     "helmet": "3.8.1",
     "node-pg-migrate": "2.7.0",
