@@ -37,13 +37,16 @@ export async function postClaim (req: Request, res: Response, next: Function) {
       return
     }
 
-    const validClaim = validateClaim(btcoAddress, chain, address, message, signature)
+    const validClaim = validateClaim(chain, address, message, signature)
     if (!validClaim) {
       res.status(400).json({message: 'Invalid claim'})
       return
     }
 
     const claim = await createClaim(btcoAddress, signature, chain, address, message)
+
+    // TODO: Submit claim to smart contract
+
     res.status(201).json(claim)
   } catch (e) {
     console.error(e)

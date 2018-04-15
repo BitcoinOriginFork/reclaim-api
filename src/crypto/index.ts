@@ -1,5 +1,6 @@
 const EthJS = require('ethereumjs-util')
 const bitcoinMessage = require('bitcoinjs-message')
+const litecoinMessage = require('litecore-message')
 
 export enum Chain {
   bitcoin = 'bitcoin',
@@ -9,11 +10,14 @@ export enum Chain {
   dash = 'dash'
 }
 
-export function validateClaim(btcoAddress: string, chain: Chain, address: string, message: string, signature: string) {
-  if (chain === Chain.ethereum) {
-    return validateEthClaim(btcoAddress, address, message, signature)
-  } else {
-    return validateBtcLikeClaim(address, message, signature)
+export function validateClaim(chain: Chain, address: string, message: string, signature: string) {
+  switch (chain) {
+    case Chain.ethereum:
+      return validateEthClaim(address, message, signature)
+    case Chain.litecoin:
+      return validateLitecoinClaim(address, message, signature)
+    default:
+      return validateBtcLikeClaim(address, message, signature)
   }
 }
 
@@ -21,11 +25,16 @@ export function validateBtcLikeClaim(address: string, message: string, signature
   return bitcoinMessage.verify(message, address, signature)
 }
 
-export function validateEthClaim(btcoAddress: string, address: string, message: string, signature: string): boolean {
+export function validateLitecoinClaim(address: string, message: string, signature: string): boolean {
+  return litecoinMessage(message).verify(address, signature)
+}
+
+export function validateEthClaim(address: string, message: string, signature: string): boolean {
   const {v, r, s} = EthJS.fromRpcSig(signature)
-  const hashedMessage = EthJS.hashPersonalMessage(message)
+  const messageInBuffer = EthJS.toBuffer(message)
+  const hashedMessage = EthJS.hashPersonalMessage(messageInBuffer)
   const publicKey = EthJS.ecrecover(hashedMessage, v, r, s)
-  return EthJS.pubToAddress(publicKey) === btcoAddress
+  return EthJS.bufferToHex(EthJS.pubToAddress(publicKey)) === address
 }
 
 export function validEthAddress(address: string) {

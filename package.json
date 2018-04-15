@@ -1,7 +1,7 @@
 {
-  "name": "single-source-api",
+  "name": "btco-reclaim-api",
   "version": "1.0.0",
-  "description": "Express, TypeScript, PG",
+  "description": "Verify Reclaim messages and submit to claim contract",
   "main": "js/index.js",
   "scripts": {
     "test": "npm run compile && mocha --exit dist/**/*.spec.js",
@@ -17,11 +17,12 @@
   "author": "Sam Jeston",
   "license": "ISC",
   "dependencies": {
-    "bitcoinjs-message": "^2.0.0",
+    "bitcoinjs-message": "2.0.0",
     "body-parser": "1.17.2",
-    "ethereumjs-util": "^5.1.5",
+    "ethereumjs-util": "5.1.5",
     "express": "4.15.3",
     "helmet": "3.8.1",
+    "litecore-message": "1.0.5",
     "node-pg-migrate": "2.7.0",
     "pg": "7.1.0",
     "pm2": "2.6.1",
