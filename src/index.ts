@@ -1,6 +1,7 @@
 import * as express from 'express'
 const bodyParser = require('body-parser')
 const helmet = require('helmet')
+const cors = require('cors')
 import { runMigrations } from './utils/run_migrations'
 import * as c from './controllers'
 import * as m from './middleware'
@@ -15,6 +16,7 @@ export async function boot() {
   await runMigrations()
   const app = express()
 
+  app.use(cors())
   app.use(helmet())
   app.use(bodyParser.json())
 
