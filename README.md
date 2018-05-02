@@ -38,10 +38,17 @@ BTCO:0xa324718E0D122D7035b129bCF5936a5D673a6327
 BTCO:0xa324718E0D122D7035b129bCF5936a5D673a6327
 IIvOTTBHBkSh9Nq+f6VaIMieoS9nwxp8yUHaf4nNbaqpW0fjD3KU9D3Wm0yeSlbfmbynvgHfrfJnxMtHj/WgREY=
 
-#### BTC (segwit) -- Interestingly the the non segwit address is used
+#### BTC (segwit) -- Interestingly the the non segwit address was returned by the signing tool...
 1GBdawQ21UeZoGGQC984UyrPhfGJMvjuZy
 BTCO:0x61A0bFB2c98d0442431064c8C6aff4bC67F257c0
 IJHRNl6y62ZuFJd1ci4zOSLtZOFgJ4HJc4QbWAprw/Q5S+2d7pljyj4w/dwEjZPg7B2aGK8pSuoUZT7difAt7P0=
+
+#### BTC MultiSig
+Pubkey 1: 03ba589daeef1a2a3fb780973b4ff9ec412c12777179c235b57524c16fd08e61ed
+Pubkey 2: 02c7d2a24de66ddaf68e7672ff210c4b2750adbd5b9a7ca4f85c8154c20e957d1c
+Sigs required: 2
+Payment Address: 3BMKnpSGYCasZAQmTSRcPi3fGnfFJw7Nuw
+Redeem Script: 522103ba589daeef1a2a3fb780973b4ff9ec412c12777179c235b57524c16fd08e61ed2102c7d2a24de66ddaf68e7672ff210c4b2750adbd5b9a7ca4f85c8154c20e957d1c52ae
 
 ### Dash
 

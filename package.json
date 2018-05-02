@@ -17,6 +17,8 @@
   "author": "Sam Jeston",
   "license": "ISC",
   "dependencies": {
+    "@types/bitcoinjs-lib": "^3.3.3",
+    "bitcoinjs-lib": "^3.3.2",
     "bitcoinjs-message": "2.0.0",
     "body-parser": "1.17.2",
     "cors": "2.8.4",
