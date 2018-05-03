@@ -44,8 +44,10 @@ export function validEthAddress(address: string) {
 
 // Understanding a decompiled multisig script
 // [ele - 80 = required sigs, buffer = sig1, buffer = sig2..., ele - 80 = number of sigs, 174 = OP_CHECKMULTISIG]
-export function parseP2shMultisigScript (script: string): {required: number, signatures: string[]} {
+export function parseP2shMultisigScript (script: string, chain: Chain): {required: number, addresses: string[], scriptAddress: string} {
   const redeemScript = Buffer.from(script, 'hex')
+  const scriptPubKey = bitcoin.script.scriptHash.output.encode(bitcoin.crypto.hash160(redeemScript))
+  const scriptAddress = bitcoin.address.fromOutputScript(scriptPubKey)
   const scriptChunks: any = bitcoin.script.decompile(redeemScript)
 
   if (scriptChunks[scriptChunks.length] !== 174) {
@@ -55,8 +57,9 @@ export function parseP2shMultisigScript (script: string): {required: number, sig
   const requiredSigs = scriptChunks[0] - 80
   const numberOfSigs = scriptChunks.length - 3
 
-  const sigBuffers = scriptChunks.slice(1, numberOfSigs + 1)
-  const sigs = sigBuffers.map((b: Buffer) => b.toString('hex'))
+  const pubKeyBuffers = scriptChunks.slice(1, numberOfSigs + 1)
+  const network = chain === Chain.litecoin ? bitcoin.networks.litecoin : bitcoin.networks.bitcoin
+  const addresses = pubKeyBuffers.map((b: Buffer) => bitcoin.ECPair.fromPublicKeyBuffer(b, network).getAddress())
 
-  return { required: requiredSigs, signatures: sigs}
+  return { required: requiredSigs, addresses, scriptAddress}
 }
