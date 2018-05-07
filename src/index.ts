@@ -6,6 +6,10 @@ import { runMigrations } from './utils/run_migrations'
 import * as c from './controllers'
 import * as m from './middleware'
 import * as path from 'path'
+import { redisCreds } from './config/redis'
+const RateLimit = require('express-rate-limit')
+const RedisStore = require('rate-limit-redis')
+const redis = require('redis')
 
 export enum ApiPath {
   applicationHealth = '/',
@@ -16,9 +20,30 @@ export async function boot() {
   await runMigrations()
   const app = express()
 
+  // Enable CORS
   app.use(cors())
+
+  // Sensible security defaults
   app.use(helmet())
+
+  // Parse request bodies to JSON
   app.use(bodyParser.json())
+
+  // Rate Limiting
+  app.enable('trust proxy')
+
+  const redisConnection = redisCreds()
+
+  const limiter = new RateLimit({
+    store: new RedisStore({
+      client: redis.createClient(redisConnection)
+    }),
+    windowMs: 50 * 1000, // 1 minute
+    max: 10, // limit each IP to 50 requests per minute
+    delayMs: 0 // disable delaying - full speed until the max limit is reached
+  })
+
+  app.use(limiter)
 
   // Routes
   app.get(ApiPath.applicationHealth, (req, res) => res.json({api: 'alive'}))

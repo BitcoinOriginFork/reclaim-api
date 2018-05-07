@@ -8,6 +8,8 @@ services:
       - DB_HOST=postgres
       - DB_PASSWORD=localpassword
       - DB_DATABASE=reclaim
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
     volumes:
       - "./dist:/server/dist"
     ports:
