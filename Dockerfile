@@ -21,4 +21,4 @@ COPY tslint.json ./server
 RUN cd server && npm run compile
 RUN cd server && rm -rf src
 
-CMD ["dumb-init", "pm2-docker", "start", "pm2.json"]
+CMD ["dumb-init", "/server/node_modules/.bin/pm2-docker", "start", "/server/pm2.json"]

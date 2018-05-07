@@ -1,4 +1,4 @@
-import { DbCreds, dbCreds, dbInitCreds, database } from '../config/db'
+import { DbCreds, dbCreds, dbInitCreds } from '../config/db'
 import { Client } from 'pg'
 const { exec } = require('child_process')
 

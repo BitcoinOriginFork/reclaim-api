@@ -1,8 +1,8 @@
 {
   "apps" : [{
     "name"        : "express",
-    "script"      : "./dist/index.js",
-    "watch"       : "./dist",
+    "script"      : "/server/dist/index.js",
+    "watch"       : "/server/dist",
     "max_memory_restart": "800M",
     "env": {
       "NODE_ENV": "development"

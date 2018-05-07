@@ -1,4 +1,4 @@
-import { DbCreds, dbCreds, dbInitCreds, database } from '../config/db'
+import { DbCreds, dbCreds, dbInitCreds } from '../config/db'
 import { Client } from 'pg'
 const { exec } = require('child_process')
 
@@ -18,13 +18,13 @@ export function runMigrations () {
 
     await client.connect()
 
-    const dbCheck = await client.query(`SELECT 1 from pg_database WHERE datname='${database}';`)
+    const dbCheck = await client.query(`SELECT 1 from pg_database WHERE datname='${creds.database}';`)
     if (dbCheck.rowCount === 0) {
-      await client.query(`CREATE DATABASE "${database}";`).catch(e => e)
-      await client.query(`GRANT ALL ON DATABASE "${database}" TO ${creds.user};`)
+      await client.query(`CREATE DATABASE "${creds.database}";`).catch(e => e)
+      await client.query(`GRANT ALL ON DATABASE "${creds.database}" TO ${creds.user};`)
     }
 
-    exec(`DATABASE_URL=${dbUrl} npm run migrate-up`, function (error: any, stdout: any, stderr: any) {
+    exec(`cd /server && DATABASE_URL=${dbUrl} npm run migrate-up`, function (error: any, stdout: any, stderr: any) {
       if (error !== null) {
         console.log('exec error: ' + error)
       }
