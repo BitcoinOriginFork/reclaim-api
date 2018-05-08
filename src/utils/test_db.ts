@@ -3,19 +3,28 @@ import { queryHandler } from '../db/connection'
 import { dbInitCreds, DbCreds } from '../config/db'
 import { Client } from 'pg'
 
+let testInit = true
+
 export async function migrateDb (): Promise<{}> {
   const initCreds: DbCreds = dbInitCreds()
 
-  const client = new Client({
-    user: initCreds.user,
-    host: initCreds.host,
-    database: initCreds.database,
-    password: initCreds.password,
-    port: initCreds.port,
-  })
+  // If it is the first test to hit this section, drop the database such that
+  // we have clean migration
+  if (testInit) {
+    const client = new Client({
+      user: initCreds.user,
+      host: initCreds.host,
+      database: initCreds.database,
+      password: initCreds.password,
+      port: initCreds.port,
+    })
 
-  await client.connect()
-  await client.query(`DROP DATABASE IF EXISTS reclaim`)
+    await client.connect()
+    await client.query(`DROP DATABASE IF EXISTS reclaim`)
+
+    testInit = false
+  }
+
   return runMigrations()
 }
 

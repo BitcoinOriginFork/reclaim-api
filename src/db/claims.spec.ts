@@ -13,7 +13,7 @@ describe('db.claims', () => {
     await migrateDb()
   })
 
-  beforeEach(async () => {
+  afterEach(async () => {
     await cleanDb()
   })
 
