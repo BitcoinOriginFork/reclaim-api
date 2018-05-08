@@ -35,9 +35,9 @@ export function createClaimJob(claim: Claim) {
   })
 }
 
-queue.process('claim', async function (claim: Claim, done: Function) {
+queue.process('claim', async function ({data}: {data: Claim}, done: Function) {
   try {
-    const res = await processClaim(claim)
+    const res = await processClaim(data)
     done(null, res)
   } catch (e) {
     done(e)

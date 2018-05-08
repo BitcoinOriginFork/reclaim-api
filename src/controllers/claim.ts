@@ -123,6 +123,7 @@ export async function postMultisigClaim (req: Request, res: Response, next: Func
     }
 
     const submittedClaim = await createClaimJob(claim)
+    console.log(submittedClaim)
     res.status(201).json(submittedClaim)
   } catch (e) {
     console.error(e)

@@ -56,7 +56,8 @@ export async function boot() {
 
     return app
   } catch (e) {
-    throw e
+    console.log(e)
+    process.exit(1)
   }
 }
 

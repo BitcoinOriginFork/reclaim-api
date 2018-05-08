@@ -5,9 +5,11 @@ import { Client } from 'pg'
 import { expect } from 'chai'
 import { Chain } from '../crypto'
 import { Claim } from '../services/queue'
+import { setTestEnv } from '../utils/set_test_env'
 
 describe('db.claims', () => {
   before(async () => {
+    setTestEnv()
     await migrateDb()
   })
 
