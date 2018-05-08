@@ -17,43 +17,47 @@ export enum ApiPath {
 }
 
 export async function boot() {
-  await runMigrations()
-  const app = express()
+  try {
+    await runMigrations()
+    const app = express()
 
-  // Enable CORS
-  app.use(cors())
+    // Enable CORS
+    app.use(cors())
 
-  // Sensible security defaults
-  app.use(helmet())
+    // Sensible security defaults
+    app.use(helmet())
 
-  // Parse request bodies to JSON
-  app.use(bodyParser.json())
+    // Parse request bodies to JSON
+    app.use(bodyParser.json())
 
-  // Rate Limiting
-  app.enable('trust proxy')
+    // Rate Limiting
+    app.enable('trust proxy')
 
-  const redisConnection = redisCreds()
+    const redisConnection = redisCreds()
 
-  const limiter = new RateLimit({
-    store: new RedisStore({
-      client: redis.createClient(redisConnection)
-    }),
-    windowMs: 50 * 1000, // 1 minute
-    max: 10, // limit each IP to 50 requests per minute
-    delayMs: 0 // disable delaying - full speed until the max limit is reached
-  })
+    const limiter = new RateLimit({
+      store: new RedisStore({
+        client: redis.createClient(redisConnection)
+      }),
+      windowMs: 50 * 1000, // 1 minute
+      max: 30, // limit each IP to 50 requests per minute
+      delayMs: 0 // disable delaying - full speed until the max limit is reached
+    })
 
-  app.use(limiter)
+    app.use(limiter)
 
-  // Routes
-  app.get(ApiPath.applicationHealth, (req, res) => res.json({api: 'alive'}))
-  app.get(ApiPath.claim, c.getClaim)
-  app.post(ApiPath.claim, c.postClaim)
+    // Routes
+    app.get(ApiPath.applicationHealth, (req, res) => res.json({api: 'alive'}))
+    app.get(ApiPath.claim, c.getClaim)
+    app.post(ApiPath.claim, c.postClaim)
 
-  // Error Handler
-  app.use(m.errorHandler)
+    // Error Handler
+    app.use(m.errorHandler)
 
-  return app
+    return app
+  } catch (e) {
+    throw e
+  }
 }
 
 boot().then((app) => {

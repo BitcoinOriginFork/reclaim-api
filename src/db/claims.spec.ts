@@ -4,6 +4,7 @@ import { queryHandler } from './connection'
 import { Client } from 'pg'
 import { expect } from 'chai'
 import { Chain } from '../crypto'
+import { Claim } from '../services/queue'
 
 describe('db.claims', () => {
   before(async () => {
@@ -20,7 +21,15 @@ describe('db.claims', () => {
   })
 
   it('getClaimByBtcoAddress returns a claim when it exists', async () => {
-    await createClaim('anAddress', 'aSignature', Chain.bitcoin, 'aChainAddress', 'aMessage')
+    const claim: Claim = {
+      chain: Chain.bitcoin,
+      chainAddress: 'aChainAddress',
+      claimToAddress: 'anAddress',
+      message: 'aMessage',
+      signature: 'aSignature'
+    }
+
+    await createClaim(claim)
 
     const res = await getClaimByBtcoAddress('anAddress')
     expect(res.signature).to.eql('aSignature')

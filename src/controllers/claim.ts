@@ -2,6 +2,7 @@ import { Request, Response } from 'express'
 import { createClaim, getClaimByBtcoAddress } from '../db/claims'
 import { Chain, validateClaim, validEthAddress, parseP2shMultisigScript } from '../crypto'
 import { uniq, includes } from 'lodash'
+import { Claim, createClaimJob } from '../services/queue'
 
 export async function getClaim (req: Request, res: Response, next: Function) {
   try {
@@ -32,6 +33,15 @@ export async function postClaim (req: Request, res: Response, next: Function) {
     }
 
     const btcoAddress = message.split(':')[1]
+
+    const claim: Claim = {
+      chain: chain,
+      chainAddress: address,
+      claimToAddress: btcoAddress,
+      message: message,
+      signature: signature
+    }
+
     const validClaimToAddress = validEthAddress(btcoAddress)
     if (!validClaimToAddress) {
       res.status(400).json({message: 'Invalid message. Ensure the form is BTCO:YourClaimAddress'})
@@ -44,14 +54,11 @@ export async function postClaim (req: Request, res: Response, next: Function) {
       return
     }
 
-    const claim = await createClaim(btcoAddress, signature, chain, address, message)
-
-    // TODO: Submit claim to smart contract
-
-    res.status(201).json(claim)
+    const submittedClaim = await createClaimJob(claim)
+    res.status(201).json(submittedClaim)
   } catch (e) {
     console.error(e)
-    next(e)
+    next({message: e})
   }
 }
 
@@ -107,12 +114,16 @@ export async function postMultisigClaim (req: Request, res: Response, next: Func
       return
     }
 
-    // Shall we just store the first signature and message... maybe
-    const claim = await createClaim(btcoAddress, signatures[0].signature, chain, scriptInfo.scriptAddress, messages[0])
+    const claim: Claim = {
+      chain: chain,
+      chainAddress: scriptInfo.scriptAddress,
+      claimToAddress: btcoAddress,
+      message: signatures.map(s => s.message).join(':'),
+      signature: signatures.map(s => s.signature).join(':')
+    }
 
-    // TODO: Submit claim to smart contract
-
-    res.status(201).json(claim)
+    const submittedClaim = await createClaimJob(claim)
+    res.status(201).json(submittedClaim)
   } catch (e) {
     console.error(e)
     next(e)

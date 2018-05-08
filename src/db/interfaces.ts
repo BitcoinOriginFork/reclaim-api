@@ -1,6 +1,6 @@
 import { Chain } from '../crypto'
 
-export interface Claim {
+export interface DbClaim {
   id?: number
   btcoAddress: string
   signature: string
