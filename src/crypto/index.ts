@@ -50,7 +50,7 @@ export function parseP2shMultisigScript (script: string, chain: Chain): {require
   const scriptAddress = bitcoin.address.fromOutputScript(scriptPubKey)
   const scriptChunks: any = bitcoin.script.decompile(redeemScript)
 
-  if (scriptChunks[scriptChunks.length] !== 174) {
+  if (scriptChunks[scriptChunks.length - 1] !== 174) {
     throw new Error(`Wrong OP Code. Multisig code is 174. This script has ${scriptChunks[scriptChunks.length]}`)
   }
 

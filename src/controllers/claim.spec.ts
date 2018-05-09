@@ -132,5 +132,21 @@ describe('db.claims', () => {
           done()
         })
     })
+
+    it('throws an error if enough signatures are not supplied', (done) => {
+      let reducedSigs = clone(claimBody)
+      reducedSigs.signatures = [reducedSigs.signatures[0]]
+
+      request(server)
+        .post('/claim/p2sh')
+        .set('Accept', 'application/json')
+        .send(reducedSigs)
+        .expect(400)
+        .end(function(err, res) {
+          if (err) return done(err)
+          expect(res.body.message).to.eql('Enough signatures were not provided')
+          done()
+        })
+    })
   })
 })

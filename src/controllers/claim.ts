@@ -72,7 +72,7 @@ export async function postMultisigClaim (req: Request, res: Response, next: Func
     const chain: Chain = req.body.chain
     const redeemScript: string = req.body.redeemScript
 
-    if (!signatures || !signatures.length || !chain || redeemScript) {
+    if (!signatures || !signatures.length || !chain || !redeemScript) {
       res.status(400).json({message: 'Missing field'})
       return
     }
