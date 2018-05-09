@@ -19,6 +19,12 @@ export function getClaimByBtcoAddress (btcoAddress: string): Promise<DbClaim> {
 
 export async function createClaim (claim: Claim): Promise<DbClaim> {
   await queryHandler(async function (client: Client) {
+    // For a cleaner error, lets check for the claim first
+    const existingClaim = await getClaimByBtcoAddress(claim.claimToAddress)
+    if (existingClaim.id) {
+      throw new Error('Claim already exists')
+    }
+
     await client.query(
       `INSERT INTO claims
       ("btcoAddress", "signature", "chain", "chainAddress", "message", "status", "createdAt", "updatedAt")

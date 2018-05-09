@@ -66,8 +66,7 @@ export function processQueue() {
   })
 }
 
-// TODO: This should actually return the transaction hash for a successful claim
-export async function processClaim(claim: Claim): Promise<DbClaim> {
+export async function processClaim(claim: Claim): Promise<{txHash: string, claimId: number, success: boolean}> {
   const dbClaim = await createClaim(claim)
 
   let txHash, success
@@ -84,5 +83,5 @@ export async function processClaim(claim: Claim): Promise<DbClaim> {
 
   // TODO: Update claim depending on state of claim submission
 
-  return dbClaim
+  return {txHash, claimId: dbClaim.id, success}
 }

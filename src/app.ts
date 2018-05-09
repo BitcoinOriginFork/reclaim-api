@@ -15,6 +15,7 @@ const redis = require('redis')
 export enum ApiPath {
   applicationHealth = '/',
   claim = '/claim',
+  multisigClaim = '/claim/p2sh',
 }
 
 export async function boot() {
@@ -51,6 +52,7 @@ export async function boot() {
     app.get(ApiPath.applicationHealth, (req, res) => res.json({api: 'alive'}))
     app.get(ApiPath.claim, c.getClaim)
     app.post(ApiPath.claim, c.postClaim)
+    app.post(ApiPath.multisigClaim, c.postMultisigClaim)
 
     // Error Handler
     app.use(m.errorHandler)

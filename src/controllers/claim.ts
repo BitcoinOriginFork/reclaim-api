@@ -18,8 +18,6 @@ export async function getClaim (req: Request, res: Response, next: Function) {
   }
 }
 
-// TODO: Improve the error handling here. createClaim will throw if a claim already
-// exists against the btcoAddress. This should produce a human readable error
 export async function postClaim (req: Request, res: Response, next: Function) {
   try {
     const signature = req.body.signature
@@ -57,8 +55,7 @@ export async function postClaim (req: Request, res: Response, next: Function) {
     const submittedClaim = await createClaimJob(claim)
     res.status(201).json(submittedClaim)
   } catch (e) {
-    console.error(e)
-    next({message: e})
+    next({message: e.message ? e.message : e })
   }
 }
 
@@ -123,7 +120,6 @@ export async function postMultisigClaim (req: Request, res: Response, next: Func
     }
 
     const submittedClaim = await createClaimJob(claim)
-    console.log(submittedClaim)
     res.status(201).json(submittedClaim)
   } catch (e) {
     console.error(e)
