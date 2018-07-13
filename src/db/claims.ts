@@ -18,7 +18,7 @@ export const chainToId = {
   [Chain.dash]: 5
 }
 
-export function getClaimsByxboAddress (xboAddress: string): Promise<DbClaim> {
+export function getClaimsByXboAddress (xboAddress: string): Promise<DbClaim> {
   return queryHandler(async function (client: Client) {
     return (await client.query(`SELECT * FROM claims WHERE xbo_address = $1`, [xboAddress])).rows as Claim[]
   })

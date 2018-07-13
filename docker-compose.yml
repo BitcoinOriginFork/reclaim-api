@@ -7,7 +7,7 @@ services:
     environment:
       - DB_HOST=postgres
       - DB_PASSWORD=localpassword
-      - DB_DATABASE=reclaim
+      - DB_DATABASE=origin
       - REDIS_HOST=redis
       - REDIS_PORT=6379
       - CONTRACT_ADDRESS=0x9538AF54A12e3bD8079148E659007b9E99Cb72A9

@@ -4,6 +4,7 @@ import { Chain } from '../crypto'
 export interface DbClaim {
   id?: number
   xbo_address: string
+  currency_balance_id: number
   signature: string
   message: string
   status: string

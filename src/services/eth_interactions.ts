@@ -1,10 +1,9 @@
 import { Chain } from '../crypto'
 import { claimCreds } from '../config/claim'
 import { xboAbi } from './xbo_abi'
-import Web3 from 'web3'
-import { Contract, TransactionObject } from 'web3/types'
+const Web3 = require('web3')
 
-function contractRef(): Contract {
+function contractRef(): any {
   const creds = claimCreds()
   const web3 = new Web3(creds.endpoint)
   return new web3.eth.Contract(xboAbi, creds.xboContractAddress)
@@ -46,7 +45,7 @@ export async function updateClaimableBalance(address: string, balance: number): 
   return txHash
 }
 
-async function signAndSubmitContractQuery(query: TransactionObject<any>) {
+async function signAndSubmitContractQuery(query: any) {
   const creds = claimCreds()
   const web3 = new Web3(creds.endpoint)
 
@@ -60,6 +59,7 @@ async function signAndSubmitContractQuery(query: TransactionObject<any>) {
     data: encodedABI,
   }
 
+  // Maybe we need tx.rawTransaction here. Log it to check
   const signedTx = await web3.eth.accounts.signTransaction(tx, creds.xboPrivateKey) as string
 
   return new Promise((res, rej) => {

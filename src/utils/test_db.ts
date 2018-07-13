@@ -20,7 +20,7 @@ export async function migrateDb (): Promise<{}> {
     })
 
     await client.connect()
-    await client.query(`DROP DATABASE IF EXISTS reclaim`)
+    await client.query(`DROP DATABASE IF EXISTS origin`)
 
     testInit = false
   }
@@ -31,6 +31,7 @@ export async function migrateDb (): Promise<{}> {
 // TODO: There is some overhead here consider we truncate each table manually. Add a fancy PG function here
 export function cleanDb () {
   return queryHandler(async function (client: Client) {
+    await client.query(`TRUNCATE currency_balances CASCADE`)
     return client.query(`TRUNCATE claims CASCADE`)
   })
 }
