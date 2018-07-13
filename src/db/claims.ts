@@ -24,29 +24,18 @@ export function getClaimsByxboAddress (xboAddress: string): Promise<DbClaim> {
   })
 }
 
-// There is a risk here of stuck claims, whereby the claim is created as pending,
-// the contract bombs, so the claim is never moved to complete.
-// TODO: Potentially we should run a scheduled job to check for claims that are in the
-// pending state and were created more than an hour a go
-export async function createClaim (claim: Claim): Promise<DbClaim> {
-  // Create a pending claim, ensuring a claim does not already exist
-  const {balanceId, claimToAddress} = await createPendingClaim(claim)
-
-  // Interact with the smart contract, updating the users claimable balance
-  const txHash = '0x'
-
-  // Update the claim as complete, reference the tx hash
+export async function finaliseClaim (balanceId: number, claimToAddress: string, txHash: string, success: boolean): Promise<DbClaim> {
   return queryHandler(async function (client: Client) {
     await client.query(
-      `UPDATE claims SET tx_hash=$1, status=$2 where xbo_address = $3 and currency_balance_id=$4`,
-      [txHash, ClaimStatus.complete, claimToAddress, balanceId]
+      `UPDATE claims SET tx_hash=$1, status=$2, updated=$3 where xbo_address = $4 and currency_balance_id=$5`,
+      [txHash, success ? ClaimStatus.complete : ClaimStatus.failed, new Date(), claimToAddress, balanceId]
     )
 
     return client.query(`SELECT * FROM claims where xbo_address = $1 and currency_balance_id = $2`, [claimToAddress, balanceId])
   })
 }
 
-export function createPendingClaim(claim: Claim) {
+export function createPendingClaim(claim: Claim): Promise<{balanceId: number, nativeBalance: number, claimToAddress: string}> {
   return queryHandler(async function (client: Client) {
     try {
       await client.query('BEGIN')
@@ -88,7 +77,7 @@ export function createPendingClaim(claim: Claim) {
 
       await client.query('COMMIT')
 
-      return {balanceId: balance.id, claimToAddress: claim.claimToAddress}
+      return {balanceId: balance.id, nativeBalance: balance.balance, claimToAddress: claim.claimToAddress}
     } catch (e) {
       await client.query('ROLLBACK')
     }

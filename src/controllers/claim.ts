@@ -1,14 +1,29 @@
 import { Request, Response } from 'express'
-import { createClaim, getClaimsByxboAddress } from '../db/claims'
+import { getClaimsByxboAddress } from '../db/claims'
 import { Chain, validateClaim, validEthAddress, parseP2shMultisigScript } from '../crypto'
 import { uniq, includes } from 'lodash'
 import { Claim, processClaim } from '../services/process_claim'
 
 export async function getClaim (req: Request, res: Response, next: Function) {
   try {
-    const xboAddress = req.body.xboAddress
+    const xboAddress = req.query.xboAddress
     const claims = await getClaimsByxboAddress(xboAddress)
     res.status(200).json(claims)
+  } catch (e) {
+    console.error(e)
+    next(e)
+  }
+}
+
+// Lookup the currency in the db, see if it exists, and if there is a balance,
+// and determine if it has been claimed already
+export async function checkClaimValidity (req: Request, res: Response, next: Function) {
+  try {
+    const chainAddress = req.query.chainAddress
+    const chain = req.query.chain
+
+    const balance = {}
+    res.status(200).json(balance)
   } catch (e) {
     console.error(e)
     next(e)

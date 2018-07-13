@@ -1,7 +1,8 @@
 import { redisCreds } from '../config/redis'
 import { Chain } from '../crypto'
-import { createClaim } from '../db/claims'
+import { createPendingClaim, finaliseClaim } from '../db/claims'
 import { DbClaim } from '../db/interfaces'
+import { updateClaimableBalance } from './eth_interactions'
 
 export interface Claim {
   chainAddress: string
@@ -11,22 +12,39 @@ export interface Claim {
   message: string
 }
 
-export async function processClaim(claim: Claim): Promise<{txHash: string, claimId: number, success: boolean}> {
-  const dbClaim = await createClaim(claim)
+// TODO: We should throw these in the DB, will hardcode for now
+const currencyToXboRates = {
+  [Chain.bitcoin]: 10,
+  [Chain.bitcoinCash]: 2,
+  [Chain.litecoin]: 0.1,
+  [Chain.ethereum]: 0.05,
+  [Chain.dash]: 0.01
+}
+
+// There is a risk here of stuck claims, whereby the claim is created as pending,
+// the contract bombs, so the claim is never moved to complete.
+// TODO: Potentially we should run a scheduled job to check for claims that are in the
+// pending state and were created more than an hour a go, or in the failed state
+export async function processClaim(claim: Claim): Promise<DbClaim> {
+  const {balanceId, nativeBalance, claimToAddress} = await createPendingClaim(claim)
 
   let txHash, success
 
   // To keep the tests simple, we do not submit the claim to an xbogin network
   // when we are running the tests
   if (process.env.NODE_ENV !== 'test') {
-    // {txHash, success} = await submitClaim
-    console.log('TODO')
+    try {
+      const balanceFromClaim = nativeBalance * currencyToXboRates[claim.chain]
+      txHash = await updateClaimableBalance(claimToAddress, balanceFromClaim)
+      success = true
+    } catch (e) {
+      txHash = ''
+      success = false
+    }
   } else {
     txHash = '0x000'
     success = true
   }
 
-  // TODO: Update claim depending on state of claim submission
-
-  return {txHash, claimId: dbClaim.id, success}
+  return finaliseClaim(balanceId, claimToAddress, txHash, success)
 }

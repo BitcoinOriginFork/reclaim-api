@@ -1,13 +1,12 @@
 import { Chain } from '../crypto'
 
+// TODO: Update
 export interface DbClaim {
   id?: number
-  btcoAddress: string
+  xbo_address: string
   signature: string
-  chain: Chain
-  chainAddress: string
   message: string
   status: string
-  createdAt: Date
-  updatedAt: Date
+  created: Date
+  updated: Date
 }

@@ -4,15 +4,6 @@ import { xboAbi } from './xbo_abi'
 import Web3 from 'web3'
 import { Contract, TransactionObject } from 'web3/types'
 
-// TODO: We should throw these in the DB, will hardcode for now
-const currencyToXboRates = {
-  [Chain.bitcoin]: 10,
-  [Chain.bitcoinCash]: 2,
-  [Chain.litecoin]: 0.1,
-  [Chain.ethereum]: 0.05,
-  [Chain.dash]: 0.01
-}
-
 function contractRef(): Contract {
   const creds = claimCreds()
   const web3 = new Web3(creds.endpoint)
