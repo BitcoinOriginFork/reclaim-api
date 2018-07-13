@@ -12,6 +12,7 @@ services:
       - REDIS_PORT=6379
       - CONTRACT_ADDRESS=0x9538AF54A12e3bD8079148E659007b9E99Cb72A9
       - CLAIM_PRIVATE_KEY=0xf6cc9407aa3d61e7b1fe2e62c2e984018168a1b0df9cb44482e3cfb568363373
+      - CLAIM_ADDRESS=0x68F2d4D6f06e86df837694cAf4d8517F2d36508B
       - ETH_ENDPOINT=https://ropsten.infura.io/
     volumes:
       - "./dist:/server/dist"
