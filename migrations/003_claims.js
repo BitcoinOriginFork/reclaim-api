@@ -7,7 +7,7 @@ exports.up = async () => {
   await client.query(`
     CREATE TABLE claims (
       id integer PRIMARY KEY,
-      ori_address character varying(255) NOT NULL,
+      xbo_address character varying(255) NOT NULL,
       signature character varying(255) NOT NULL UNIQUE,
       message character varying(255) NOT NULL,
       currency_balance_id integer references currency_balances(id),

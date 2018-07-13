@@ -1,13 +1,13 @@
 import { Request, Response } from 'express'
-import { createClaim, getClaimsByOriAddress } from '../db/claims'
+import { createClaim, getClaimsByxboAddress } from '../db/claims'
 import { Chain, validateClaim, validEthAddress, parseP2shMultisigScript } from '../crypto'
 import { uniq, includes } from 'lodash'
 import { Claim, processClaim } from '../services/process_claim'
 
 export async function getClaim (req: Request, res: Response, next: Function) {
   try {
-    const oriAddress = req.body.oriAddress
-    const claims = await getClaimsByOriAddress(oriAddress)
+    const xboAddress = req.body.xboAddress
+    const claims = await getClaimsByxboAddress(xboAddress)
     res.status(200).json(claims)
   } catch (e) {
     console.error(e)
@@ -27,19 +27,19 @@ export async function postClaim (req: Request, res: Response, next: Function) {
       return
     }
 
-    const oriAddress = message.split(':')[1]
+    const xboAddress = message.split(':')[1]
 
     const claim: Claim = {
       chain: chain,
       chainAddress: address,
-      claimToAddress: oriAddress,
+      claimToAddress: xboAddress,
       message: message,
       signature: signature
     }
 
-    const validClaimToAddress = validEthAddress(oriAddress)
+    const validClaimToAddress = validEthAddress(xboAddress)
     if (!validClaimToAddress) {
-      res.status(400).json({message: 'Invalid message. Ensure the form is ORI:YourClaimAddress'})
+      res.status(400).json({message: 'Invalid message. Ensure the form is xbo:YourClaimAddress'})
       return
     }
 
@@ -77,12 +77,12 @@ export async function postMultisigClaim (req: Request, res: Response, next: Func
     const messages = signatures.map(s => s.message)
     const uniqMessage = uniq(messages)
     if (uniqMessage.length > 1) {
-      res.status(400).json({message: 'Invalid messages. All signatories must sign the same message.'})
+      res.status(400).json({message: 'Invalid messages. All signatxboes must sign the same message.'})
       return
     }
 
-    const oriAddress = messages[0].split(':')[1]
-    const validClaimToAddress = validEthAddress(oriAddress)
+    const xboAddress = messages[0].split(':')[1]
+    const validClaimToAddress = validEthAddress(xboAddress)
     if (!validClaimToAddress) {
       res.status(400).json({message: 'Invalid message. Ensure the form is BTCO:YourClaimAddress'})
       return
@@ -110,7 +110,7 @@ export async function postMultisigClaim (req: Request, res: Response, next: Func
     const claim: Claim = {
       chain: chain,
       chainAddress: scriptInfo.scriptAddress,
-      claimToAddress: oriAddress,
+      claimToAddress: xboAddress,
       message: signatures.map(s => s.message).join(':'),
       signature: signatures.map(s => s.signature).join(':')
     }

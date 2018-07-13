@@ -16,7 +16,7 @@ export async function processClaim(claim: Claim): Promise<{txHash: string, claim
 
   let txHash, success
 
-  // To keep the tests simple, we do not submit the claim to an origin network
+  // To keep the tests simple, we do not submit the claim to an xbogin network
   // when we are running the tests
   if (process.env.NODE_ENV !== 'test') {
     // {txHash, success} = await submitClaim

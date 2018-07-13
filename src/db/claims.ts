@@ -18,9 +18,9 @@ export const chainToId = {
   [Chain.dash]: 5
 }
 
-export function getClaimsByOriAddress (oriAddress: string): Promise<DbClaim> {
+export function getClaimsByxboAddress (xboAddress: string): Promise<DbClaim> {
   return queryHandler(async function (client: Client) {
-    return (await client.query(`SELECT * FROM claims WHERE ori_address = $1`, [oriAddress])).rows as Claim[]
+    return (await client.query(`SELECT * FROM claims WHERE xbo_address = $1`, [xboAddress])).rows as Claim[]
   })
 }
 
@@ -38,11 +38,11 @@ export async function createClaim (claim: Claim): Promise<DbClaim> {
   // Update the claim as complete, reference the tx hash
   return queryHandler(async function (client: Client) {
     await client.query(
-      `UPDATE claims SET tx_hash=$1, status=$2 where ori_address = $3 and currency_balance_id=$4`,
+      `UPDATE claims SET tx_hash=$1, status=$2 where xbo_address = $3 and currency_balance_id=$4`,
       [txHash, ClaimStatus.complete, claimToAddress, balanceId]
     )
 
-    return client.query(`SELECT * FROM claims where ori_address = $1 and currency_balance_id = $2`, [claimToAddress, balanceId])
+    return client.query(`SELECT * FROM claims where xbo_address = $1 and currency_balance_id = $2`, [claimToAddress, balanceId])
   })
 }
 
@@ -59,7 +59,7 @@ export function createPendingClaim(claim: Claim) {
 
       const balance = balanceRows[0]
       if (!balance) {
-        throw new Error('Invalid claim. It does not exist in the ORI chain snapshot')
+        throw new Error('Invalid claim. It does not exist in the xbo chain snapshot')
       }
 
       if (balance.claimed) {
@@ -68,7 +68,7 @@ export function createPendingClaim(claim: Claim) {
 
       await client.query(
         `INSERT INTO claims
-        (ori_address, signature, message, currency_balance_id, status, created_at, updated_at)
+        (xbo_address, signature, message, currency_balance_id, status, created_at, updated_at)
         VALUES ($1, $2, $3, $4, $5, $6, $7)`,
         [
           claim.claimToAddress,
