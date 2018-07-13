@@ -7,7 +7,7 @@ exports.up = async () => {
   await client.query(`
     CREATE TABLE currency_balances (
       id integer PRIMARY KEY,
-      currencyId integer references currency_types(id),
+      currency_id integer references currency_types(id),
       address character varying(255) NOT NULL UNIQUE,
       balance numeric NOT NULL UNIQUE,
       block integer NOT NULL UNIQUE,

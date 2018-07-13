@@ -11,9 +11,10 @@ exports.up = async () => {
       signature character varying(255) NOT NULL UNIQUE,
       message character varying(255) NOT NULL,
       currency_balance_id integer references currency_balances(id),
+      tx_hash character varying(255),
       status character varying(255) NOT NULL,
-      created_at timestamp with time zone NOT NULL,
-      updated_at timestamp with time zone NOT NULL
+      created timestamp with time zone NOT NULL,
+      updated timestamp with time zone NOT NULL
     );
 
     ALTER TABLE claims OWNER TO postgres;

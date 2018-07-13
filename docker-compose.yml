@@ -10,6 +10,9 @@ services:
       - DB_DATABASE=reclaim
       - REDIS_HOST=redis
       - REDIS_PORT=6379
+      - CONTRACT_ADDRESS=0x9538AF54A12e3bD8079148E659007b9E99Cb72A9
+      - CLAIM_PRIVATE_KEY=0xf6cc9407aa3d61e7b1fe2e62c2e984018168a1b0df9cb44482e3cfb568363373
+      - ETH_ENDPOINT=https://ropsten.infura.io/
     volumes:
       - "./dist:/server/dist"
     ports:

@@ -1,17 +1,14 @@
 import { Request, Response } from 'express'
-import { createClaim, getClaimByBtcoAddress } from '../db/claims'
+import { createClaim, getClaimsByOriAddress } from '../db/claims'
 import { Chain, validateClaim, validEthAddress, parseP2shMultisigScript } from '../crypto'
 import { uniq, includes } from 'lodash'
 import { Claim, processClaim } from '../services/process_claim'
 
 export async function getClaim (req: Request, res: Response, next: Function) {
   try {
-    const btcoAddress = req.body.btcoAddress
-    const claim = await getClaimByBtcoAddress(btcoAddress)
-
-    if (!claim) return res.status(404).json({message: 'Resource not found'})
-
-    res.status(200).json(claim)
+    const oriAddress = req.body.oriAddress
+    const claims = await getClaimsByOriAddress(oriAddress)
+    res.status(200).json(claims)
   } catch (e) {
     console.error(e)
     next(e)
@@ -30,19 +27,19 @@ export async function postClaim (req: Request, res: Response, next: Function) {
       return
     }
 
-    const btcoAddress = message.split(':')[1]
+    const oriAddress = message.split(':')[1]
 
     const claim: Claim = {
       chain: chain,
       chainAddress: address,
-      claimToAddress: btcoAddress,
+      claimToAddress: oriAddress,
       message: message,
       signature: signature
     }
 
-    const validClaimToAddress = validEthAddress(btcoAddress)
+    const validClaimToAddress = validEthAddress(oriAddress)
     if (!validClaimToAddress) {
-      res.status(400).json({message: 'Invalid message. Ensure the form is BTCO:YourClaimAddress'})
+      res.status(400).json({message: 'Invalid message. Ensure the form is ORI:YourClaimAddress'})
       return
     }
 
@@ -84,8 +81,8 @@ export async function postMultisigClaim (req: Request, res: Response, next: Func
       return
     }
 
-    const btcoAddress = messages[0].split(':')[1]
-    const validClaimToAddress = validEthAddress(btcoAddress)
+    const oriAddress = messages[0].split(':')[1]
+    const validClaimToAddress = validEthAddress(oriAddress)
     if (!validClaimToAddress) {
       res.status(400).json({message: 'Invalid message. Ensure the form is BTCO:YourClaimAddress'})
       return
@@ -113,7 +110,7 @@ export async function postMultisigClaim (req: Request, res: Response, next: Func
     const claim: Claim = {
       chain: chain,
       chainAddress: scriptInfo.scriptAddress,
-      claimToAddress: btcoAddress,
+      claimToAddress: oriAddress,
       message: signatures.map(s => s.message).join(':'),
       signature: signatures.map(s => s.signature).join(':')
     }
