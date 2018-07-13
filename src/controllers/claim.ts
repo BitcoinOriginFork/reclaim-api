@@ -2,7 +2,7 @@ import { Request, Response } from 'express'
 import { createClaim, getClaimByBtcoAddress } from '../db/claims'
 import { Chain, validateClaim, validEthAddress, parseP2shMultisigScript } from '../crypto'
 import { uniq, includes } from 'lodash'
-import { Claim, createClaimJob } from '../services/queue'
+import { Claim, processClaim } from '../services/process_claim'
 
 export async function getClaim (req: Request, res: Response, next: Function) {
   try {
@@ -52,7 +52,7 @@ export async function postClaim (req: Request, res: Response, next: Function) {
       return
     }
 
-    const submittedClaim = await createClaimJob(claim)
+    const submittedClaim = await processClaim(claim)
     res.status(201).json(submittedClaim)
   } catch (e) {
     next({message: e.message ? e.message : e })
@@ -65,7 +65,6 @@ export interface SignatureForValidation {
   message: string
 }
 
-// TODO: Untested
 export async function postMultisigClaim (req: Request, res: Response, next: Function) {
   try {
     const signatures: SignatureForValidation[] = req.body.signatures
@@ -119,7 +118,7 @@ export async function postMultisigClaim (req: Request, res: Response, next: Func
       signature: signatures.map(s => s.signature).join(':')
     }
 
-    const submittedClaim = await createClaimJob(claim)
+    const submittedClaim = await processClaim(claim)
     res.status(201).json(submittedClaim)
   } catch (e) {
     console.error(e)

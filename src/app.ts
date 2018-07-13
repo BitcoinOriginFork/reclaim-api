@@ -7,7 +7,6 @@ import * as c from './controllers'
 import * as m from './middleware'
 import * as path from 'path'
 import { redisCreds } from './config/redis'
-import { processQueue } from './services/queue'
 const RateLimit = require('express-rate-limit')
 const RedisStore = require('rate-limit-redis')
 const redis = require('redis')
@@ -41,8 +40,8 @@ export async function boot() {
       store: new RedisStore({
         client: redis.createClient(redisConnection)
       }),
-      windowMs: 50 * 1000, // 1 minute
-      max: 30, // limit each IP to 50 requests per minute
+      windowMs: 60 * 1000, // 1 minute
+      max: 30, // limit each IP to 30 requests per minute
       delayMs: 0 // disable delaying - full speed until the max limit is reached
     })
 
@@ -56,9 +55,6 @@ export async function boot() {
 
     // Error Handler
     app.use(m.errorHandler)
-
-    // Enable Queue Processing
-    processQueue()
 
     return app
   } catch (e) {

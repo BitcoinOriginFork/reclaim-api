@@ -2,7 +2,7 @@ import { queryHandler } from './connection'
 import { Client } from 'pg'
 import { DbClaim } from './interfaces'
 import { Chain } from '../crypto'
-import { Claim } from '../services/queue'
+import { Claim } from '../services/process_claim'
 
 export enum ClaimStatus {
   pending = 'pending',

@@ -7,14 +7,13 @@ exports.up = async () => {
   await client.query(`
     CREATE TABLE claims (
       id integer PRIMARY KEY,
-      "btcoAddress" character varying(255) NOT NULL UNIQUE,
-      "signature" character varying(255) NOT NULL UNIQUE,
-      "chain" character varying(255) NOT NULL,
-      "chainAddress" character varying(255) NOT NULL,
-      "message" character varying(255) NOT NULL,
-      "status" character varying(255) NOT NULL,
-      "createdAt" timestamp with time zone NOT NULL,
-      "updatedAt" timestamp with time zone NOT NULL
+      ori_address character varying(255) NOT NULL,
+      signature character varying(255) NOT NULL UNIQUE,
+      message character varying(255) NOT NULL,
+      currency_balance_id integer references currency_balances(id),
+      status character varying(255) NOT NULL,
+      created_at timestamp with time zone NOT NULL,
+      updated_at timestamp with time zone NOT NULL
     );
 
     ALTER TABLE claims OWNER TO postgres;
@@ -22,8 +21,6 @@ exports.up = async () => {
     ALTER TABLE claims_id_seq OWNER TO postgres;
     ALTER SEQUENCE claims_id_seq OWNED BY claims.id;
     ALTER TABLE ONLY claims ALTER COLUMN id SET DEFAULT nextval('claims_id_seq'::regclass);
-
-    CREATE UNIQUE INDEX address_idx ON claims ("btcoAddress")
   `)
 
   await client.end()
