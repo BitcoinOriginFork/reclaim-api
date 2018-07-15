@@ -11,12 +11,8 @@ function getCreds(): {host: string, pw: string, db: string} {
   const pw = process.env.DB_PASSWORD
   const db = process.env.DB_DATABASE
 
-  if (!host || !db) {
+  if (!host || !db && !pw) {
     throw new Error('No DB credentials found')
-  }
-
-  if (process.env.NODE_ENV !== 'test' && !pw) {
-    throw new Error('No DB password found')
   }
 
   return {host, pw, db}

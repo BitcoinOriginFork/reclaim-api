@@ -20,7 +20,7 @@ export async function migrateDb (): Promise<{}> {
     })
 
     await client.connect()
-    await client.query(`DROP DATABASE IF EXISTS origin`)
+    await client.query(`DROP DATABASE IF EXISTS origin;`)
 
     testInit = false
   }

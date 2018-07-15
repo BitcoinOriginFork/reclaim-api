@@ -15,6 +15,7 @@ services:
       - ETH_ENDPOINT=https://ropsten.infura.io/
     volumes:
       - "./dist:/server/dist"
+      - "./migrations:/server/migrations"
     ports:
       - "3000:3000"
   postgres:

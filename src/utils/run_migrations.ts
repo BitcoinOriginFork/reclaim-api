@@ -31,6 +31,7 @@ export function runMigrations () {
       `, function (error: any, stdout: any, stderr: any) {
         if (error !== null) {
           console.log('exec error: ' + error)
+          rej(error)
         }
 
         res()

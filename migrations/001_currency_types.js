@@ -15,7 +15,7 @@ exports.up = async () => {
     CREATE SEQUENCE curreny_types_id_seq START WITH 1 INCREMENT BY 1 NO MINVALUE NO MAXVALUE CACHE 1;
     ALTER TABLE curreny_types_id_seq OWNER TO postgres;
     ALTER SEQUENCE curreny_types_id_seq OWNED BY currency_types.id;
-    ALTER TABLE ONLY claims ALTER COLUMN id SET DEFAULT nextval('curreny_types_id_seq'::regclass);
+    ALTER TABLE ONLY currency_types ALTER COLUMN id SET DEFAULT nextval('curreny_types_id_seq'::regclass);
   `)
 
   await client.end()
