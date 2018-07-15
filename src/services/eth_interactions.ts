@@ -48,12 +48,13 @@ export async function updateClaimableBalance(address: string, balance: number): 
 async function signAndSubmitContractQuery(query: any) {
   const creds = claimCreds()
   const web3 = new Web3(creds.endpoint)
+  const fromAddress = web3.eth.accounts.privateKeyToAccount(creds.xboPrivateKey).address
 
   const encodedABI = query.encodeABI()
-  const gas = await query.estimateGas({from: creds.xboAddress})
+  const gas = await query.estimateGas({from: fromAddress})
 
   const tx = {
-    from: creds.xboAddress,
+    from: fromAddress,
     to: creds.xboContractAddress,
     gas: gas,
     data: encodedABI,
