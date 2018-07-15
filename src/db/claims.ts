@@ -46,7 +46,7 @@ export function createPendingClaim(claim: Claim): Promise<{balanceId: number, na
         [claim.chainAddress, chainToId[claim.chain]]
       )
 
-      const balance = balanceRows[0]
+      const balance = balanceRows.rows[0]
       if (!balance) {
         throw new Error('Invalid claim. It does not exist in the xbo chain snapshot')
       }
@@ -57,7 +57,7 @@ export function createPendingClaim(claim: Claim): Promise<{balanceId: number, na
 
       await client.query(
         `INSERT INTO claims
-        (xbo_address, signature, message, currency_balance_id, status, created_at, updated_at)
+        (xbo_address, signature, message, currency_balance_id, status, created, updated)
         VALUES ($1, $2, $3, $4, $5, $6, $7)`,
         [
           claim.claimToAddress,
@@ -80,6 +80,7 @@ export function createPendingClaim(claim: Claim): Promise<{balanceId: number, na
       return {balanceId: balance.id, nativeBalance: balance.balance, claimToAddress: claim.claimToAddress}
     } catch (e) {
       await client.query('ROLLBACK')
+      throw e
     }
   })
 }

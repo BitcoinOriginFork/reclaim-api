@@ -5,7 +5,7 @@ import { openServer, closeServer } from '../utils/test_server'
 import { clone } from 'lodash'
 const request = require('supertest')
 
-describe('db.claims', () => {
+describe('controllers.claims', () => {
   let server
 
   before(async () => {
@@ -71,7 +71,7 @@ describe('db.claims', () => {
         .expect(400)
         .end(function(err, res) {
           if (err) return done(err)
-          expect(res.body.message).to.eql('Invalid message. Ensure the form is BTCO:YourClaimAddress')
+          expect(res.body.message).to.eql('Invalid message. Ensure the form is xbo:YourClaimAddress')
           done()
         })
     })
