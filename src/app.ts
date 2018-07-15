@@ -15,7 +15,7 @@ export enum ApiPath {
   applicationHealth = '/',
   claim = '/claim',
   multisigClaim = '/claim/p2sh',
-  xboContractDetails = '/contract/xbo',
+  xboContractDetails = '/contracts/xbo',
 }
 
 export async function boot() {
