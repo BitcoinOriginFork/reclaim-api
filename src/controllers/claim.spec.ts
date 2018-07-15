@@ -3,6 +3,8 @@ import { expect } from 'chai'
 import { setTestEnv } from '../utils/set_test_env'
 import { openServer, closeServer } from '../utils/test_server'
 import { clone } from 'lodash'
+import { queryHandler } from '../db/connection'
+import { Client } from 'pg'
 const request = require('supertest')
 
 describe('controllers.claims', () => {
@@ -15,6 +17,18 @@ describe('controllers.claims', () => {
 
   beforeEach(async () => {
     server = await openServer()
+
+    await queryHandler(async function (client: Client) {
+      await client.query(`
+        INSERT INTO currency_balances (currency_id, address, balance, block, created)
+          VALUES ($1, $2, $3, $4, $5)
+      `, [1, '1Hw54G2iKy15VNiVF9y5rnaAYHZ5yV4Uzt', 10, 2404, new Date()])
+
+      return client.query(`
+        INSERT INTO currency_balances (currency_id, address, balance, block, created)
+          VALUES ($1, $2, $3, $4, $5)
+      `, [1, '3BMKnpSGYCasZAQmTSRcPi3fGnfFJw7Nuw', 10, 2404, new Date()])
+    })
   })
 
   afterEach(async () => {
@@ -38,8 +52,8 @@ describe('controllers.claims', () => {
         .expect(201)
         .end(function(err, res) {
           if (err) return done(err)
-          expect(res.body.txHash).to.eql('0x000')
-          expect(res.body.success).to.eql(true)
+          expect(res.body.tx_hash).to.eql('0x000')
+          expect(res.body.status).to.eql('complete')
           done()
         })
     })
@@ -95,7 +109,7 @@ describe('controllers.claims', () => {
         .expect(500)
         .end(function(err, res) {
           if (err) return done(err)
-          expect(res.body.message).to.eql('Claim already exists')
+          expect(res.body.message).to.eql('This balance has already been claimed')
           done()
         })
     })
@@ -127,8 +141,8 @@ describe('controllers.claims', () => {
         .expect(201)
         .end(function(err, res) {
           if (err) return done(err)
-          expect(res.body.txHash).to.eql('0x000')
-          expect(res.body.success).to.eql(true)
+          expect(res.body.tx_hash).to.eql('0x000')
+          expect(res.body.status).to.eql('complete')
           done()
         })
     })

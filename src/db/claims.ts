@@ -31,7 +31,7 @@ export async function finaliseClaim (balanceId: number, claimToAddress: string, 
       [txHash, success ? ClaimStatus.complete : ClaimStatus.failed, new Date(), claimToAddress, balanceId]
     )
 
-    return client.query(`SELECT * FROM claims where xbo_address = $1 and currency_balance_id = $2`, [claimToAddress, balanceId])
+    return (await client.query(`SELECT * FROM claims where xbo_address = $1 and currency_balance_id = $2`, [claimToAddress, balanceId])).rows[0]
   })
 }
 
