@@ -15,6 +15,7 @@ export enum ApiPath {
   applicationHealth = '/',
   claim = '/claim',
   multisigClaim = '/claim/p2sh',
+  xboContractDetails = '/contract/xbo',
 }
 
 export async function boot() {
@@ -50,6 +51,7 @@ export async function boot() {
     // Routes
     app.get(ApiPath.applicationHealth, (req, res) => res.json({api: 'alive'}))
     app.get(ApiPath.claim, c.getClaim)
+    app.get(ApiPath.xboContractDetails, c.getXboContractDetails)
     app.post(ApiPath.claim, c.postClaim)
     app.post(ApiPath.multisigClaim, c.postMultisigClaim)
 
