@@ -12,7 +12,8 @@ exports.up = async () => {
       balance numeric NOT NULL,
       block integer NOT NULL,
       created timestamp with time zone NOT NULL,
-      claimed timestamp with time zone
+      claimed timestamp with time zone,
+      CONSTRAINT unq_currency_balance UNIQUE(currency_id,address)
     );
 
     ALTER TABLE currency_balances OWNER TO postgres;
