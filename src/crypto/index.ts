@@ -4,13 +4,14 @@ const litecoinMessage = require('litecore-message')
 import * as bitcoin from 'bitcoinjs-lib'
 
 export enum Chain {
-  bitcoin = 'bitcoin',
-  bitcoinCash = 'bitcoinCash',
-  litecoin = 'litecoin',
-  ethereum = 'ethereum',
-  dash = 'dash'
+  bitcoin = 'Bitcoin',
+  bitcoinCash = 'Bitcoin Cash',
+  litecoin = 'Litecoin',
+  ethereum = 'Ethereum',
+  dash = 'Dash'
 }
 
+// TODO: Consider casing here and in the db, do we lower case everything??
 export function validateClaim(chain: Chain, address: string, message: string, signature: string) {
   switch (chain) {
     case Chain.ethereum:
@@ -35,7 +36,7 @@ export function validateEthClaim(address: string, message: string, signature: st
   const messageInBuffer = EthJS.toBuffer(message)
   const hashedMessage = EthJS.hashPersonalMessage(messageInBuffer)
   const publicKey = EthJS.ecrecover(hashedMessage, v, r, s)
-  return EthJS.bufferToHex(EthJS.pubToAddress(publicKey)) === address
+  return EthJS.bufferToHex(EthJS.pubToAddress(publicKey)) === address.toLowerCase()
 }
 
 export function validEthAddress(address: string) {

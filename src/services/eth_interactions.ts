@@ -18,27 +18,17 @@ export function getClaimableBalance(address: string) {
 // otherwise we update
 export async function updateClaimableBalance(address: string, balance: number): Promise<string> {
   const xbo = contractRef()
-
-  // Check for a balance... Not sure how the contract responds to getClaimableBalance
-  // if the balance does not exist. Does it return 0 or does it throw?
-  // Assuming it throws here
-  let currentBalance
   let txHash
-  try {
-    currentBalance = await xbo.methods.getClaimableBalance(address).call()
-  } catch (e) {
-    // TODO: Need more info on this throw to ensure we only call it if the err is
-    // of the right type
-    console.log(e.message)
-    const createClaimerQuery = xbo.methods.createNewClaimer(address, balance)
-    txHash = await signAndSubmitContractQuery(createClaimerQuery)
-  }
+  const currentBalance = Number(await xbo.methods.getClaimableBalance(address).call())
+  console.log(currentBalance)
 
-  // If there is a current balance, it signifies that the getClaimableBalance did
-  // not throw, therefore we should update the balance
-  if (currentBalance) {
+  // TODO: What is the proper usage of setClaimableBalance vs createNewClaimer
+  if (currentBalance !== 0) {
     const newBalance = currentBalance + balance
     const createClaimerQuery = xbo.methods.setClaimableBalance(address, balance)
+    txHash = await signAndSubmitContractQuery(createClaimerQuery)
+  } else {
+    const createClaimerQuery = xbo.methods.createNewClaimer(address, balance)
     txHash = await signAndSubmitContractQuery(createClaimerQuery)
   }
 
@@ -60,11 +50,9 @@ async function signAndSubmitContractQuery(query: any) {
     data: encodedABI,
   }
 
-  // Maybe we need tx.rawTransaction here. Log it to check
-  const signedTx = await web3.eth.accounts.signTransaction(tx, creds.xboPrivateKey) as string
-
+  const signedTx = await web3.eth.accounts.signTransaction(tx, creds.xboPrivateKey)
   return new Promise((res, rej) => {
-    web3.eth.sendSignedTransaction(signedTx)
+    web3.eth.sendSignedTransaction(signedTx.rawTransaction)
       .on('transactionHash', (hash) => res(hash))
       .on('error', (err) => rej(err))
   })

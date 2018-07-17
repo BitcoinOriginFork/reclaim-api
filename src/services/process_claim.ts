@@ -38,6 +38,7 @@ export async function processClaim(claim: Claim): Promise<DbClaim> {
       txHash = await updateClaimableBalance(claimToAddress, balanceFromClaim)
       success = true
     } catch (e) {
+      console.log(e)
       txHash = ''
       success = false
     }
