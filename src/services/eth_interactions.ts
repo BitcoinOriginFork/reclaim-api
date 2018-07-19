@@ -22,7 +22,6 @@ export async function updateClaimableBalance(address: string, balance: number): 
   const currentBalance = Number(await xbo.methods.getClaimableBalance(address).call())
   console.log(currentBalance)
 
-  // TODO: What is the proper usage of setClaimableBalance vs createNewClaimer
   if (currentBalance !== 0) {
     const newBalance = currentBalance + balance
     const createClaimerQuery = xbo.methods.setClaimableBalance(address, balance)

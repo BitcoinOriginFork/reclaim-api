@@ -14,11 +14,11 @@ export interface Claim {
 
 // TODO: We should throw these in the DB, will hardcode for now
 const currencyToXboRates = {
-  [Chain.bitcoin]: 10,
-  [Chain.bitcoinCash]: 2,
-  [Chain.litecoin]: 0.1,
-  [Chain.ethereum]: 0.05,
-  [Chain.dash]: 0.01
+  [Chain.bitcoin]: 100,
+  [Chain.bitcoinCash]: 20,
+  [Chain.litecoin]: 10,
+  [Chain.ethereum]: 5,
+  [Chain.dash]: 1
 }
 
 // There is a risk here of stuck claims, whereby the claim is created as pending,
@@ -34,7 +34,7 @@ export async function processClaim(claim: Claim): Promise<DbClaim> {
   // when we are running the tests
   if (process.env.NODE_ENV !== 'test') {
     try {
-      const balanceFromClaim = nativeBalance * currencyToXboRates[claim.chain]
+      const balanceFromClaim = Math.ceil(nativeBalance * currencyToXboRates[claim.chain])
       txHash = await updateClaimableBalance(claimToAddress, balanceFromClaim)
       success = true
     } catch (e) {
