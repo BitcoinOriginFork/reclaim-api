@@ -11,9 +11,9 @@ services:
       - DB_PORT=5432
       - REDIS_HOST=redis
       - REDIS_PORT=6379
-      - CONTRACT_ADDRESS=0x9538AF54A12e3bD8079148E659007b9E99Cb72A9
+      - CONTRACT_ADDRESS=0x6767922A2048a09d1AA1E32f7b3C4f2dC512D3E1
       - CLAIM_PRIVATE_KEY=0xf6cc9407aa3d61e7b1fe2e62c2e984018168a1b0df9cb44482e3cfb568363373
-      - ETH_ENDPOINT=https://ropsten.infura.io/
+      - ETH_ENDPOINT=https://kovan.infura.io/
     volumes:
       - "./dist:/server/dist"
       - "./migrations:/server/migrations"
