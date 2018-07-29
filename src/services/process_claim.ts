@@ -34,7 +34,8 @@ export async function processClaim(claim: Claim): Promise<DbClaim> {
   // when we are running the tests
   if (process.env.NODE_ENV !== 'test') {
     try {
-      const balanceFromClaim = Math.ceil(nativeBalance * currencyToXboRates[claim.chain])
+      // 10 ** 18 to handle 18 decimals in contract
+      const balanceFromClaim = Math.ceil(nativeBalance * currencyToXboRates[claim.chain] * (10 ** 18))
       txHash = await updateClaimableBalance(claimToAddress, balanceFromClaim)
       success = true
     } catch (e) {
