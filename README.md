@@ -34,9 +34,9 @@ https://www.myetherwallet.com/signmsg.html
 BTCO:0xa324718E0D122D7035b129bCF5936a5D673a6327
 
 #### BTC (original)
-1Hw54G2iKy15VNiVF9y5rnaAYHZ5yV4Uzt
-BTCO:0xa324718E0D122D7035b129bCF5936a5D673a6327
-IIvOTTBHBkSh9Nq+f6VaIMieoS9nwxp8yUHaf4nNbaqpW0fjD3KU9D3Wm0yeSlbfmbynvgHfrfJnxMtHj/WgREY=
+1HZwkjkeaoZfTSaJxDw6aKkxp45agDiEzN
+XBO:0xf5f6b9ec85edccc196705ce1f80d490d7f6a709d
+G3uMIOajRBg4sWEMZkPKB7S3I2RR52W/Y11beYYcD9TpTwhnOEtz/BDvnEBiNy0uMkzHNDBHmQFvAXreBppVeDg=
 
 #### BTC (segwit) -- Interestingly the the non segwit address was returned by the signing tool...
 1GBdawQ21UeZoGGQC984UyrPhfGJMvjuZy

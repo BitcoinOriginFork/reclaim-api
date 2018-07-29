@@ -3,6 +3,7 @@ import { Chain } from '../crypto'
 import { createPendingClaim, finaliseClaim } from '../db/claims'
 import { DbClaim } from '../db/interfaces'
 import { updateClaimableBalance } from './eth_interactions'
+import {BigNumber} from 'bignumber.js'
 
 export interface Claim {
   chainAddress: string
@@ -35,7 +36,7 @@ export async function processClaim(claim: Claim): Promise<DbClaim> {
   if (process.env.NODE_ENV !== 'test') {
     try {
       // 10 ** 18 to handle 18 decimals in contract
-      const balanceFromClaim = Math.ceil(nativeBalance * currencyToXboRates[claim.chain] * (10 ** 18))
+      const balanceFromClaim = new BigNumber(Math.ceil(nativeBalance * currencyToXboRates[claim.chain])).multipliedBy(10 ** 18)
       txHash = await updateClaimableBalance(claimToAddress, balanceFromClaim)
       success = true
     } catch (e) {

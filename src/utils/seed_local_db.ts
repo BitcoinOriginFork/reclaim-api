@@ -10,7 +10,7 @@ async function seed() {
     await client.query(`
       INSERT INTO currency_balances (currency_id, address, balance, block, created)
         VALUES ($1, $2, $3, $4, $5)
-    `, [1, '1Hw54G2iKy15VNiVF9y5rnaAYHZ5yV4Uzt', 10, 2404, new Date()])
+    `, [1, '1HZwkjkeaoZfTSaJxDw6aKkxp45agDiEzN', 10, 2404, new Date()])
     await client.query(`
       INSERT INTO currency_balances (currency_id, address, balance, block, created)
         VALUES ($1, $2, $3, $4, $5)

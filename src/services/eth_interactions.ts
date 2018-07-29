@@ -1,6 +1,7 @@
 import { Chain } from '../crypto'
 import { claimCreds } from '../config/claim'
 import { xboAbi } from './xbo_abi'
+import BigNumber from 'bignumber.js'
 const Web3 = require('web3')
 
 function contractRef(): any {
@@ -16,14 +17,13 @@ export function getClaimableBalance(address: string) {
 
 // Here we check for a balance against the address, if it doesnt exist, we create,
 // otherwise we update
-export async function updateClaimableBalance(address: string, balance: number): Promise<string> {
+export async function updateClaimableBalance(address: string, balance: BigNumber): Promise<string> {
   const xbo = contractRef()
   let txHash
-  const currentBalance = Number(await xbo.methods.getClaimableBalance(address).call())
-  console.log(currentBalance)
+  const currentBalance = new BigNumber(await xbo.methods.getClaimableBalance(address).call())
 
-  if (currentBalance !== 0) {
-    const newBalance = currentBalance + balance
+  if (currentBalance.toNumber() !== 0) {
+    const newBalance = currentBalance.plus(balance)
     const createClaimerQuery = xbo.methods.setClaimableBalance(address, balance)
     txHash = await signAndSubmitContractQuery(createClaimerQuery)
   } else {
