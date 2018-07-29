@@ -36,7 +36,11 @@ export async function processClaim(claim: Claim): Promise<DbClaim> {
   if (process.env.NODE_ENV !== 'test') {
     try {
       // 10 ** 18 to handle 18 decimals in contract
-      const balanceFromClaim = new BigNumber(Math.ceil(nativeBalance * currencyToXboRates[claim.chain])).multipliedBy(10 ** 18)
+      const balanceFromClaim = new BigNumber(nativeBalance)
+        .multipliedBy(currencyToXboRates[claim.chain])
+        .multipliedBy(10 ** 18)
+        .decimalPlaces(0, 6)
+
       txHash = await updateClaimableBalance(claimToAddress, balanceFromClaim)
       success = true
     } catch (e) {
